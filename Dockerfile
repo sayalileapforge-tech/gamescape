@@ -1,21 +1,27 @@
-# Build stage with Google's official Flutter image
-FROM google/dart:latest as flutter_builder
+# Build stage with modern Ubuntu
+FROM ubuntu:22.04 as flutter_builder
 
-# Install Flutter
+ENV DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update && \
-    apt-get install -y git unzip xz-utils libglu1-mesa clang cmake ninja-build pkg-config libgtk-3-dev && \
+    apt-get install -y --no-install-recommends \
+    curl git unzip xz-utils zip \
+    clang cmake ninja-build pkg-config \
+    libgtk-3-dev liblzma-dev && \
     rm -rf /var/lib/apt/lists/*
 
-RUN git clone --depth 1 https://github.com/flutter/flutter.git /flutter && \
-    /flutter/bin/flutter config --enable-web
+# Install Flutter with stable channel
+RUN git clone --depth 1 --branch stable https://github.com/flutter/flutter.git /flutter && \
+    /flutter/bin/flutter config --enable-web && \
+    /flutter/bin/flutter precache
 
-ENV PATH="/flutter/bin:${PATH}"
+ENV PATH="/flutter/bin:/flutter/bin/cache/dart-sdk/bin:${PATH}"
 
 WORKDIR /app
 COPY . .
 
 # Build web app
-RUN flutter pub get --no-precompile && \
+RUN flutter pub get && \
     flutter build web --release
 
 # Runtime stage
