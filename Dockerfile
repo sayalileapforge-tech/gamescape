@@ -1,13 +1,21 @@
-# Build stage with pre-built Flutter image
-FROM cirrusci/flutter:latest as builder
+# Build stage with Google's official Flutter image
+FROM google/dart:latest as flutter_builder
+
+# Install Flutter
+RUN apt-get update && \
+    apt-get install -y git unzip xz-utils libglu1-mesa clang cmake ninja-build pkg-config libgtk-3-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN git clone --depth 1 https://github.com/flutter/flutter.git /flutter && \
+    /flutter/bin/flutter config --enable-web
+
+ENV PATH="/flutter/bin:${PATH}"
 
 WORKDIR /app
-
-# Copy project files
 COPY . .
 
-# Install dependencies and build web app
-RUN flutter pub get && \
+# Build web app
+RUN flutter pub get --no-precompile && \
     flutter build web --release
 
 # Runtime stage
@@ -16,7 +24,7 @@ FROM nginx:alpine
 WORKDIR /usr/share/nginx/html
 
 # Copy built web app from builder
-COPY --from=builder /app/build/web .
+COPY --from=flutter_builder /app/build/web .
 
 # Configure nginx for Flutter SPA routing
 RUN echo 'server { \
@@ -29,7 +37,6 @@ RUN echo 'server { \
         try_files $uri $uri/ /index.html; \
     } \
     \
-    # Cache busting for assets \
     location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ { \
         expires 30d; \
         add_header Cache-Control "public, immutable"; \
