@@ -1,0 +1,37 @@
+{
+    "projects": {
+      "default": "gamescape-admin"
+    },
+    "firestore": {
+      "rules": "firestore.rules",
+      "indexes": "firestore.indexes.json"
+    },
+    "functions": {
+      "source": "functions",
+      "runtime": "nodejs22"
+    },
+  
+
+    "flutter": {
+      "platforms": {
+        "android": {
+          "default": {
+            "projectId": "gamescape-admin",
+            "appId": "1:106946796347:android:b5eda1317b40f849cd351e",
+            "fileOutput": "android/app/google-services.json"
+          }
+        },
+        "dart": {
+          "lib/firebase_options.dart": {
+            "projectId": "gamescape-admin",
+            "configurations": {
+              "android": "1:106946796347:android:b5eda1317b40f849cd351e",
+              "ios": "1:106946796347:ios:793472f27701bcb9cd351e",
+              "web": "1:106946796347:web:db08b7c8fec6ce83cd351e"
+            }
+          }
+        }
+      }
+    }
+  }
+  

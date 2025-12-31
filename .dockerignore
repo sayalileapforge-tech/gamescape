@@ -1,0 +1,39 @@
+# Flutter
+.dart_tool/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node
+node_modules/
+npm-debug.log
+
+# Python
+.env
+__pycache__/
+*.pyc
+
+# Tests
+test/
+
+# Docs
+README.md
+CHANGELOG.md
+
+# Others
+.env.local
+.env.*.local
+firebase-debug.log

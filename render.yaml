@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: gamescape-admin
+    env: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: FLUTTER_ENV
+        value: production
+    healthCheckPath: /
+    autoDeploy: true

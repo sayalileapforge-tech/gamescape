@@ -1,0 +1,101 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ----- helpers -----
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function userRole() {
+      return isSignedIn()
+        ? get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role
+        : null;
+    }
+
+    function isSuperAdmin() {
+      return userRole() == 'superadmin';
+    }
+
+    function isAdmin() {
+      return userRole() == 'admin' || userRole() == 'superadmin';
+    }
+
+    function isManager() {
+      return userRole() == 'manager';
+    }
+
+    function isStaff() {
+      return userRole() == 'staff';
+    }
+
+    function userBranches() {
+      return isSignedIn()
+        ? get(/databases/$(database)/documents/users/$(request.auth.uid)).data.branchIds
+        : null;
+    }
+
+    function canAccessBranch(branchId) {
+      return isAdmin()
+        || isSuperAdmin()
+        || (userBranches() != null && branchId in userBranches());
+    }
+
+    // ----- users -----
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      // user can update themself
+      allow update: if isSignedIn() && request.auth.uid == userId;
+      // admin/superadmin can create/update others
+      allow create, update: if isAdmin() || isSuperAdmin();
+    }
+
+    // ----- branches tree -----
+    match /branches/{branchId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isAdmin() || isManager() || isSuperAdmin();
+
+      // seats
+      match /seats/{seatId} {
+        allow read: if isSignedIn();
+        allow create, update, delete: if isAdmin() || isManager() || isSuperAdmin();
+      }
+
+      // inventory
+      match /inventory/{itemId} {
+        allow read: if isSignedIn() && canAccessBranch(branchId);
+        allow create, update, delete: if (isAdmin() || isManager() || isSuperAdmin()) && canAccessBranch(branchId);
+
+        match /logs/{logId} {
+          allow read: if isSignedIn() && canAccessBranch(branchId);
+          allow create: if isSignedIn() && canAccessBranch(branchId);
+        }
+      }
+
+      // sessions
+      match /sessions/{sessionId} {
+        allow read: if isSignedIn() && canAccessBranch(branchId);
+        allow create, update: if isSignedIn() && canAccessBranch(branchId);
+        allow delete: if (isAdmin() || isManager() || isSuperAdmin()) && canAccessBranch(branchId);
+
+        // orders under session
+        match /orders/{orderId} {
+          allow read: if isSignedIn() && canAccessBranch(branchId);
+          allow create, update: if isSignedIn() && canAccessBranch(branchId);
+          allow delete: if (isAdmin() || isManager() || isSuperAdmin()) && canAccessBranch(branchId);
+        }
+
+        // seat_changes under session
+        match /seat_changes/{changeId} {
+          allow read: if isSignedIn() && canAccessBranch(branchId);
+          allow create: if isSignedIn() && canAccessBranch(branchId);
+        }
+      }
+    }
+
+    // collectionGroup reads (reports, customers, invoices)
+    match /{document=**} {
+      allow read: if isSignedIn();
+    }
+  }
+}

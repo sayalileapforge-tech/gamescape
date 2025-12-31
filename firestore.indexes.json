@@ -1,0 +1,37 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "sessions",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "branchId", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "sessions",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "startTime", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "sessions",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        { "fieldPath": "branchId", "order": "ASCENDING" },
+        { "fieldPath": "startTime", "order": "DESCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": [
+    {
+      "collectionGroup": "sessions",
+      "fieldPath": "status",
+      "indexes": [
+        { "order": "ASCENDING", "queryScope": "COLLECTION_GROUP" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "106946796347",
+    "project_id": "gamescape-admin",
+    "storage_bucket": "gamescape-admin.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:106946796347:android:b5eda1317b40f849cd351e",
+        "android_client_info": {
+          "package_name": "com.example.gamescape_admin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBorfZ_Ja9uQ9DDQ3VS6nfkjE3hpD92MkE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:106946796347:android:c390b80f1348e428cd351e",
+        "android_client_info": {
+          "package_name": "com.gamescape.gamescape_admin_panel"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBorfZ_Ja9uQ9DDQ3VS6nfkjE3hpD92MkE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
